@@ -14,6 +14,7 @@ import {
   CImage,
 } from '@coreui/react';
 import '@coreui/coreui/dist/css/coreui.min.css';
+import { Link } from 'react-router-dom';
 
 const Homepage = () => {
   const [services, setServices] = useState([]);
@@ -53,23 +54,25 @@ const Homepage = () => {
       {/* Services Overview */}
       <CContainer className="my-12">
         <h3 className="text-2xl font-semibold text-gray-800 mb-8 text-center">Our Services</h3>
-        <CRow className="gap-4 justify-center">
+        <div className="flex overflow-x-auto space-x-4 pb-4">
           {services.map(service => (
-            <CCol md="4" key={service._id} className="mb-6">
+            <div className="flex-none w-80" key={service._id}>
               <CCard className="hover:shadow-lg transition-shadow">
                 <CCardBody>
                   <CCardTitle className="text-lg font-semibold">{service.name}</CCardTitle>
                   <CCardText className="text-gray-600">{service.description}</CCardText>
                   <CCardText className="text-gray-700">Price: ${service.price}</CCardText>
                   <CCardText className="text-gray-700">Duration: {service.duration} hours</CCardText>
+                  <Link to={'/bookingform'}>
                   <CButton color="primary" className="mt-4 w-full transition-transform transform hover:scale-105">
                     Book Now
                   </CButton>
+                  </Link>
                 </CCardBody>
               </CCard>
-            </CCol>
+            </div>
           ))}
-        </CRow>
+        </div>
         {error && <p className="text-red-600 text-center mt-4">{error}</p>}
       </CContainer>
 

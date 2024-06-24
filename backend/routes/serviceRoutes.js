@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const serviceController = require('../controller/userController'); // Adjust the path based on your project structure
+const serviceController = require('../controller/serviceController'); // Adjust the path based on your project structure
 
 const protect = require('../middleware/protect')
 const admin = require("../middleware/admin")

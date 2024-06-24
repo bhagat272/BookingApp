@@ -13,6 +13,7 @@ import ServiceForm from './components/ServiceForm';
 import ServicesList from './components/ServicesList';
 import UserList from './components/UserList';
 import ServiceUpdateForm from './components/ServiceUpdateForm';
+import BookingForm from './components/BookingForm';
 // Import the 404 component
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         <Route path="/register" element={<RegisterForm />} />
         <Route path='/services' element={<ServicesList/>}/>
         <Route path="/homepage" element={<Homepage />} />
+        <Route path='/bookingform' element={<BookingForm/>}/>
         <Route path="*" element={<NotFound />} />
         <Route element={<PrivateRoute allowedRoles={['admin']} />}>
           <Route path="/dashboard" element={<Dashboard />} />

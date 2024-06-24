@@ -20,7 +20,7 @@ app.use(
 
 app.use("/api", require("./routes/userRoutes"));
 app.use('/api', require("./routes/serviceRoutes"));
-
+app.use('/api',require("./routes/bookingRoute"))
 app.listen(process.env.PORT, () => 
   console.log(`server is running on ${process.env.PORT}`)
 );

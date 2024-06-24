@@ -1,19 +1,48 @@
-// src/App.js
-
-import React, { useState } from 'react';
-import axios from 'axios';
-import 'tailwindcss/tailwind.css';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addService, clearServiceStatus } from './redux/slices/serviceSlice';
+import toast, { Toaster } from 'react-hot-toast';
 
 const ServiceForm = () => {
+  const dispatch = useDispatch();
+
+  // Select 'services' slice from Redux store
+  const { loading, error } = useSelector(state => state.service) || {};
+  console.log(loading)
+
   const [formValues, setFormValues] = useState({
     name: '',
     description: '',
     price: '',
-    duration: ''
+    duration: '',
   });
 
   const [errors, setErrors] = useState({});
   const [submitStatus, setSubmitStatus] = useState('');
+
+  useEffect(() => {
+    if (loading === 'succeeded') {
+      setSubmitStatus('Service created successfully!');
+      setFormValues({
+        name: '',
+        description: '',
+        price: '',
+        duration: '',
+      });
+      setErrors({});
+    } else if (loading === 'failed') {
+      setSubmitStatus('Failed to create service.');
+      setErrors({ form: error });
+    }
+
+    // Clear status after showing message
+    const timer = setTimeout(() => {
+      setSubmitStatus('');
+      dispatch(clearServiceStatus());
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [loading, error, dispatch]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -28,44 +57,53 @@ const ServiceForm = () => {
     const { name, value } = e.target;
     setFormValues({
       ...formValues,
-      [name]: value
+      [name]: value,
     });
+
+    // Real-time validation
+    setErrors(prevErrors => ({
+      ...prevErrors,
+      [name]: undefined,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length === 0) {
-      try {
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/services`, formValues);
-        setSubmitStatus('Service created successfully!');
-        setFormValues({
-          name: '',
-          description: '',
-          price: '',
-          duration: ''
-        });
-        setErrors({});
-      } catch (err) {
-        setSubmitStatus('Failed to create service.');
-        if (err.response && err.response.data && err.response.data.error) {
-          setErrors({ form: err.response.data.error });
-        } else {
-          setErrors({ form: 'An error occurred. Please try again later.' });
-        }
-      }
+      dispatch(addService(formValues));
     } else {
       setErrors(validationErrors);
     }
   };
 
+  const handleReset = () => {
+    setFormValues({
+      name: '',
+      description: '',
+      price: '',
+      duration: '',
+    });
+    setErrors({});
+    setSubmitStatus('');
+  };
+  const submittion = ()=>{
+    if (formValues.name && formValues.description && formValues.price && formValues.duration) {
+      toast.success('Service created successfully');
+    }
+    setTimeout(() => {
+      
+      handleReset()
+    }, 1000);
+  }
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
+      <Toaster/>
       <div className="w-full max-w-lg bg-white rounded-lg shadow-md p-8">
-        <h2 className="text-2xl font-bold mb-6">Service Form</h2>
-        
+        <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Service Form</h2>
+
         <form onSubmit={handleSubmit}>
-          
+
           {/* Service Name */}
           <div className="mb-4">
             <label htmlFor="name" className="block text-gray-700 font-medium mb-2">Service Name</label>
@@ -129,25 +167,27 @@ const ServiceForm = () => {
               required
               min="1"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-              placeholder="Enter service duration"
+              placeholder="Enter service duration in hours"
             />
             {errors.duration && <p className="text-red-500 text-sm">{errors.duration}</p>}
           </div>
 
           {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-200"
-          >
-            Submit
-          </button>
-        </form>
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md focus:outline-none"
+              disabled={loading === 'loading'}
+              onClick={submittion}
+            >
+              {loading === 'loading' ? 'Submitting...' : 'Submit'}
+            </button>
+          </div>
 
-        {/* Submission Status */}
-        {submitStatus && <p className={`mt-4 text-center text-sm ${submitStatus.includes('successfully') ? 'text-green-500' : 'text-red-500'}`}>{submitStatus}</p>}
-        
-        {/* General Form Error */}
-        {errors.form && <p className="text-red-500 text-sm mt-4">{errors.form}</p>}
+          {/* Submission Status */}
+          {submitStatus && <p className="text-center text-green-600 mt-3">{submitStatus}</p>}
+
+        </form>
       </div>
     </div>
   );

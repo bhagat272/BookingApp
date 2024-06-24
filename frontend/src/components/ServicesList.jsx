@@ -1,63 +1,71 @@
-// src/ServicesList.js
-
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import {
+  fetchServices,
+  deleteService,
+  clearServiceStatus,
+} from "./redux/slices/serviceSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const ServicesList = ({ onEdit }) => {
-  const [services, setServices] = useState([]);
-  const [error, setError] = useState('');
+  const dispatch = useDispatch();
+
+  const { loading, error, services } =
+    useSelector((state) => state.service) || {};
 
   useEffect(() => {
-    const fetchServices = async () => {
+    const fetchServiceDetails = async () => {
       try {
-        const token = localStorage.getItem('authToken'); // Assume you store your token in local storage
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/serviceslist`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setServices(response.data);
-        console.log(response.data);
-      } catch (err) {
-        console.error('Error fetching services:', err);
-        setError('Failed to fetch services.');
+        await dispatch(fetchServices());
+      } catch (error) {
+        console.error("Error fetching service details:", error);
       }
     };
-    
 
-    fetchServices();
-  }, []);
+    fetchServiceDetails();
+  }, [dispatch]);
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/services/${id}`);
-      setServices(services.filter(service => service._id !== id));
+      await dispatch(deleteService(id));
     } catch (err) {
-      setError('Failed to delete service.');
+      console.error("Error deleting service:", err);
     }
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto mt-8">
-      <h2 className="text-2xl font-bold mb-6">Services List</h2>
+    <div className="w-full max-w-7xl mx-auto mt-8 px-4">
+      <h2 className="text-2xl font-bold mb-6 text-center">Services List</h2>
+      <Link
+        to="/serviceform"
+        className="flex justify-center no-underline hover:no-underline mb-2"
+      >
+        <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-200">
+          Add Services
+        </button>
+      </Link>
+
       {error && <p className="text-red-500 text-sm">{error}</p>}
-      <ul className="space-y-4">
-        {services.map(service => (
-          <li key={service._id} className="bg-white p-4 rounded-md shadow-md flex justify-between items-center">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {services.map((service) => (
+          <div
+            key={service._id}
+            className="bg-white p-4 rounded-md shadow-md flex flex-col justify-between transform transition-transform duration-200 hover:scale-105"
+          >
             <div>
-              <h3 className="text-lg font-bold">{service.name}</h3>
-              <p>{service.description}</p>
-              <p>${service.price}</p>
-              <p>{service.duration} hours</p>
+              <h3 className="text-lg font-bold mb-2">{service.name}</h3>
+              <p className="text-gray-600">{service.description}</p>
+              <p className="text-gray-700 mt-2">Price: ${service.price}</p>
+              <p className="text-gray-700">
+                Duration: {service.duration} hours
+              </p>
             </div>
-            <div className="space-x-2">
+            <div className="flex justify-end mt-4 space-x-2">
               <Link to={`/serviceupdate/${service._id}`}>
-              <button
-                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200"
-              >
-                Edit
-              </button>
+                <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200">
+                  Edit
+                </button>
               </Link>
               <button
                 onClick={() => handleDelete(service._id)}
@@ -66,9 +74,9 @@ const ServicesList = ({ onEdit }) => {
                 Delete
               </button>
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

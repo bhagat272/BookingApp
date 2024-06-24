@@ -1,37 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-const ServiceUpdateForm = ({ serviceId, onSuccess }) => {
-    const {id} = useParams()
+import { fetchServiceById, updateService, clearServiceStatus } from './redux/slices/serviceSlice'; // Adjust path as per your project structure
+import toast, { Toaster } from 'react-hot-toast';
+
+const UpdateServiceForm = () => {
+  const { id } = useParams();
+  const dispatch = useDispatch();
+
+  const { loading, error, selectedService } = useSelector(state => state.service) || {};
+  console.log(loading)
   const [formValues, setFormValues] = useState({
     name: '',
     description: '',
     price: '',
-    duration: ''
+    duration: '',
   });
 
   const [errors, setErrors] = useState({});
   const [submitStatus, setSubmitStatus] = useState('');
 
-  // Fetch the service data on component mount
   useEffect(() => {
-    const fetchServiceData = async () => {
+    const fetchServiceDetails = async () => {
       try {
-        const token = localStorage.getItem('authToken'); // Replace with how you store your token
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/services/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`, // Include the token in the header
-          },
-        });
-        setFormValues(response.data);
-        console.log(response.data)
-      } catch (err) {
-        setSubmitStatus('Failed to fetch service data.');
+        await dispatch(fetchServiceById(id));
+      } catch (error) {
+        console.error('Error fetching service details:', error);
       }
     };
 
-    fetchServiceData();
-  }, [serviceId]);
+    fetchServiceDetails();
+  }, [dispatch, id]);
+
+  // Update formValues whenever selectedService changes
+  useEffect(() => {
+    if (selectedService) {
+      setFormValues({
+        name: selectedService.name || '',
+        description: selectedService.description || '',
+        price: selectedService.price || '',
+        duration: selectedService.duration || '',
+      });
+    }
+  }, [selectedService]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -46,8 +57,14 @@ const ServiceUpdateForm = ({ serviceId, onSuccess }) => {
     const { name, value } = e.target;
     setFormValues({
       ...formValues,
-      [name]: value
+      [name]: value,
     });
+
+    // Real-time validation
+    setErrors(prevErrors => ({
+      ...prevErrors,
+      [name]: undefined,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -55,36 +72,46 @@ const ServiceUpdateForm = ({ serviceId, onSuccess }) => {
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length === 0) {
       try {
-        const token = localStorage.getItem('authToken'); // Replace with how you store your token
-        const response = await axios.put(`${import.meta.env.VITE_API_URL}/services/${serviceId}`, formValues, {
-          headers: {
-            Authorization: `Bearer ${token}`, // Include the token in the header
-          },
-        });
+        await dispatch(updateService({ id, ...formValues }));
         setSubmitStatus('Service updated successfully!');
-        setErrors({});
-        onSuccess(); // Callback to handle success actions like redirecting or updating parent state
-      } catch (err) {
+        toast.success("Service updated successfully!")
+        handleReset();
+      } catch (error) {
+        console.error('Failed to update service:', error);
         setSubmitStatus('Failed to update service.');
-        if (err.response && err.response.data && err.response.data.error) {
-          setErrors({ form: err.response.data.error });
-        } else {
-          setErrors({ form: 'An error occurred. Please try again later.' });
-        }
+        setErrors({ form: error.message });
       }
     } else {
       setErrors(validationErrors);
     }
   };
 
+  const handleReset = () => {
+    setFormValues({
+      name: '',
+      description: '',
+      price: '',
+      duration: '',
+    });
+    setErrors({});
+    setTimeout(() => {
+      setSubmitStatus('');
+    }, 3000);
+  };
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearServiceStatus());
+    };
+  }, [dispatch]);
+
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
+      <Toaster />
       <div className="w-full max-w-lg bg-white rounded-lg shadow-md p-8">
-        <h2 className="text-2xl font-bold mb-6">Update Service</h2>
-        
+        <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Update Service</h2>
+
         <form onSubmit={handleSubmit}>
-          
-          {/* Service Name */}
           <div className="mb-4">
             <label htmlFor="name" className="block text-gray-700 font-medium mb-2">Service Name</label>
             <input
@@ -101,7 +128,6 @@ const ServiceUpdateForm = ({ serviceId, onSuccess }) => {
             {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
           </div>
 
-          {/* Description */}
           <div className="mb-4">
             <label htmlFor="description" className="block text-gray-700 font-medium mb-2">Description</label>
             <textarea
@@ -118,7 +144,6 @@ const ServiceUpdateForm = ({ serviceId, onSuccess }) => {
             {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
           </div>
 
-          {/* Price */}
           <div className="mb-4">
             <label htmlFor="price" className="block text-gray-700 font-medium mb-2">Price ($)</label>
             <input
@@ -135,7 +160,6 @@ const ServiceUpdateForm = ({ serviceId, onSuccess }) => {
             {errors.price && <p className="text-red-500 text-sm">{errors.price}</p>}
           </div>
 
-          {/* Duration */}
           <div className="mb-6">
             <label htmlFor="duration" className="block text-gray-700 font-medium mb-2">Duration (hours)</label>
             <input
@@ -147,28 +171,27 @@ const ServiceUpdateForm = ({ serviceId, onSuccess }) => {
               required
               min="1"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-              placeholder="Enter service duration"
+              placeholder="Enter service duration in hours"
             />
             {errors.duration && <p className="text-red-500 text-sm">{errors.duration}</p>}
           </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-200"
-          >
-            Update Service
-          </button>
-        </form>
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rousnded-md focus:outline-none"
+              disabled={loading === 'loading'}
+            >
+              {loading === 'loading' ? 'Updating...' : 'Update'}
+            </button>
+          </div>
 
-        {/* Submission Status */}
-        {submitStatus && <p className={`mt-4 text-center text-sm ${submitStatus.includes('successfully') ? 'text-green-500' : 'text-red-500'}`}>{submitStatus}</p>}
-        
-        {/* General Form Error */}
-        {errors.form && <p className="text-red-500 text-sm mt-4">{errors.form}</p>}
+          {submitStatus && <p className="text-center text-green-600 mt-3">{submitStatus}</p>}
+
+        </form>
       </div>
     </div>
   );
 };
 
-export default ServiceUpdateForm;
+export default UpdateServiceForm;
