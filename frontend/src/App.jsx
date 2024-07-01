@@ -14,6 +14,7 @@ import ServicesList from './components/ServicesList';
 import UserList from './components/UserList';
 import ServiceUpdateForm from './components/ServiceUpdateForm';
 import BookingForm from './components/BookingForm';
+import Profile from './components/Profile';
 // Import the 404 component
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route path='/serviceform' element={<ServiceForm/>}/>
         <Route path='/serviceupdate/:id' element={<ServiceUpdateForm/>}/>
         <Route path='/users' element={<UserList/>}/>
+        <Route path='/profile' element={<Profile/>}/>
         <Route path="/register" element={<RegisterForm />} />
         <Route path='/services' element={<ServicesList/>}/>
         <Route path="/homepage" element={<Homepage />} />

@@ -1,4 +1,4 @@
-require("dotenv").config();
+// server.js
 
 const express = require("express");
 const cors = require("cors");
@@ -8,8 +8,14 @@ const bodyParser = require('body-parser');
 const app = express();
 
 dbConnect();
+ 
+app.use(cors({
+  origin: 'http://localhost:5173', // Replace with your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true // Allow cookies or authorization headers
+}));
 
-app.use(cors({ origin: 'http://localhost:5173' })); // Adjust the origin to match your frontend URL
 
 app.use(express.json());
 app.use(bodyParser.json());
@@ -17,10 +23,20 @@ app.use(bodyParser.json());
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms")
 );
+app.use('/uploads', express.static('uploads')); // Serve uploaded files statically
 
+// Routes
 app.use("/api", require("./routes/userRoutes"));
-app.use('/api', require("./routes/serviceRoutes"));
-app.use('/api',require("./routes/bookingRoute"))
+// Add other routes as needed
+app.use("/api", require("./routes/serviceRoutes"));
+app.use("/api", require("./routes/bookingRoute"));
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Internal Server Error' });
+});
+
 app.listen(process.env.PORT, () => 
-  console.log(`server is running on ${process.env.PORT}`)
+  console.log(`Server is running on ${process.env.PORT}`)
 );

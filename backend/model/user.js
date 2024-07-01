@@ -1,7 +1,8 @@
-const mongoose = require("mongoose");
-const validator = require('validator');
+// models/user.js
+const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -14,7 +15,7 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Email is required'],
         validate: {
             validator: validator.isEmail,
-            message: "Please enter a valid email"
+            message: 'Please enter a valid email'
         }
     },
     password: {
@@ -29,34 +30,37 @@ const userSchema = new mongoose.Schema({
                     minUppercase: 1
                 });
             },
-            message: "Password must contain 1 special character, 1 Uppercase, 1 Lowercase"
+            message: 'Password must contain 1 special character, 1 uppercase, 1 lowercase'
         }
     },
     role: {
         type: String,
         enum: ['admin', 'user'],
         default: 'user'
+    },
+    profilePhoto: {
+        type: String,
+        default: 'uploads/default.jpg' // Default profile photo
     }
 });
 
-// Pre-save hook to hash password before saving user
-userSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) {
-        return next();
-    }
-    const salt = await bcrypt.genSalt(12);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-});
+// Pre-save hook to hash the password
+// userSchema.pre('save', async function(next) {
+//     if (!this.isModified('password')) {
+//         return next();
+//     }
+//     const salt = await bcrypt.genSalt(12);
+//     this.password = await bcrypt.hash(this.password, salt);
+//     next();
+// });
 
 // Method to generate JWT
-userSchema.methods.generateToken = function() {
-    const token = jwt.sign(
-        { id: this._id, email: this.email, role: this.role }, // payload
-        process.env.JWT_SECRET, // secret key
-        { expiresIn: '30d' } // options
-    );
-    return token;
-};
+// userSchema.methods.generateToken = function() {
+//     return jwt.sign(
+//         { id: this._id, email: this.email, role: this.role },
+//         process.env.JWT_SECRET,
+//         { expiresIn: '30d' }
+//     );
+// };
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', userSchema);
