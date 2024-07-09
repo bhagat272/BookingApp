@@ -24,11 +24,10 @@ import SecureRoutes from "./components/SecureRoutes";
 function App() {
   return (
     <>
-      <Navbar />
       <Routes>
         {/* Privateroute for admin and user only*/}
 
-        <Route element={<SecureRoutes allowedRoles={["admin", "user"]} />}>
+        <Route element={<PrivateRoute allowedRoles={["admin", "user"]} />}>
           <Route path="/services" element={<ServicesList />} />
           <Route path="/bookingform" element={<BookingForm />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import validator from "validator";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "./redux/slices/LoginSlice";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -16,9 +16,12 @@ const LoginForm = () => {
     loading: false,
   });
 
+  const {token , role} = useSelector((state)=>state.login)
+
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    const role = localStorage.getItem("userRole");
+    
+    // const token = localStorage.getItem("authToken");
+    // const role = localStorage.getItem("userRole");
     console.log(token, role);
     if (role === "admin") {
       navigate("/dashboard");

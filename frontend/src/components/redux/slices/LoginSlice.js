@@ -35,8 +35,8 @@ import {
         state.role = null;
         state.token = null;
         state.loading = false;
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userRole");
       },
     },
     extraReducers: (builder) => {
@@ -57,8 +57,8 @@ import {
             state.name = name;
             state.role = role;
             // Save to localStorage
-            localStorage.setItem("token", token);
-            localStorage.setItem("role", role);
+            localStorage.setItem("authToken", token);
+            localStorage.setItem("userRole", role);
           } catch (e) {
             console.error("Error decoding token:", e);
             state.error = "Invalid token received";

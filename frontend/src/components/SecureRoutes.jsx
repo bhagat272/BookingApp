@@ -1,5 +1,6 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
+import Navbar from "./Nav";
 
 const SecureRoutes = ({ allowedRoles }) => {
   const token = localStorage.getItem("authToken");
@@ -14,7 +15,7 @@ const SecureRoutes = ({ allowedRoles }) => {
 
   return (
     <>
-       <Outlet />
+        <Outlet />
     </>
   );
 };
