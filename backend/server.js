@@ -3,6 +3,7 @@
 const express = require("express");
 const cors = require("cors");
 const dbConnect = require("./config/db");
+const passwordReset = require("./routes/passwordReset")
 const morgan = require("morgan");
 const bodyParser = require('body-parser');
 const app = express();
@@ -30,6 +31,7 @@ app.use("/api", require("./routes/userRoutes"));
 // Add other routes as needed
 app.use("/api", require("./routes/serviceRoutes"));
 app.use("/api", require("./routes/bookingRoute"));
+app.use('/api', passwordReset);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

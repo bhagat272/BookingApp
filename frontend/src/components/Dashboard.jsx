@@ -41,12 +41,13 @@ const Dashboard = () => {
           <CNavItem href="#">
             <CIcon customClassName="nav-icon" icon={cilSpeedometer} /> Nav item
           </CNavItem>
-          <CNavItem href="#">
-            <CIcon customClassName="nav-icon" icon={cilUser} />
+          <CNavItem href="/users">
             <Link
               to="/users"
               className="flex justify-center no-underline hover:no-underline mb-2"
             >
+            <CIcon customClassName="nav-icon" icon={cilUser} />
+            
               {" "}
               Users
             </Link>

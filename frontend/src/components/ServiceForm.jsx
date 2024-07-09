@@ -8,8 +8,7 @@ const ServiceForm = () => {
 
   // Select 'services' slice from Redux store
   const { loading, error } = useSelector(state => state.service) || {};
-  console.log(loading)
-
+  
   const [formValues, setFormValues] = useState({
     name: '',
     description: '',
@@ -23,6 +22,7 @@ const ServiceForm = () => {
   useEffect(() => {
     if (loading === 'succeeded') {
       setSubmitStatus('Service created successfully!');
+      toast.success('Service created successfully');
       setFormValues({
         name: '',
         description: '',
@@ -178,7 +178,7 @@ const ServiceForm = () => {
               type="submit"
               className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md focus:outline-none"
               disabled={loading === 'loading'}
-              onClick={submittion}
+              // onClick={submittion}
             >
               {loading === 'loading' ? 'Submitting...' : 'Submit'}
             </button>

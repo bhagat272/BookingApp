@@ -5,15 +5,13 @@ import { Toaster, toast } from 'react-hot-toast';
 
 const UserList = () => {
     const dispatch = useDispatch();
-    const { user, loading, error } = useSelector((state) => state.users); // Use 'user' slice as defined in your redux store
+    const { user, loading, error } = useSelector((state) => state.users); // Corrected to 'users' instead of 'user'
     const [searchQuery, setSearchQuery] = useState('');
     const [showNoUserToast, setShowNoUserToast] = useState(false);
-
-
-
+    console.log(user)
     useEffect(() => {
         dispatch(fetchAllUsers());
-    }, [dispatch]);
+    }, []);
 
     // Filter users based on search query
     const filteredUsers = user?.users?.filter(user =>
@@ -35,7 +33,7 @@ const UserList = () => {
     if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
     // Defensive check
-    if (!Array.isArray(user.users)) return <p className="text-center text-yellow-500">Unexpected data format</p>;
+    if (!Array.isArray(user?.users)) return <p className="text-center text-yellow-500">Unexpected data format</p>;
 
     return (
         <div className="p-6 bg-gray-50 min-h-screen">

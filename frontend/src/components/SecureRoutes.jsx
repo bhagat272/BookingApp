@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
-const PrivateRoute = ({ allowedRoles }) => {
+const SecureRoutes = ({ allowedRoles }) => {
   const token = localStorage.getItem("authToken");
   const role = localStorage.getItem("userRole");
 
@@ -19,4 +19,4 @@ const PrivateRoute = ({ allowedRoles }) => {
   );
 };
 
-export default PrivateRoute;
+export default SecureRoutes;

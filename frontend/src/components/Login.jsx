@@ -193,6 +193,12 @@ const LoginForm = () => {
               <u>Create an account</u>
             </Link>
           </p>
+          <p className="mt-2 mb-3 text">
+            Forgot Password?{" "}
+            <Link to={"/forgot-password"}>
+              <u>Reset it here</u>
+            </Link>
+          </p>
         </form>
       )}
     </div>

@@ -29,6 +29,7 @@ const ServicesList = ({ onEdit }) => {
   const handleDelete = async (id) => {
     try {
       await dispatch(deleteService(id));
+      await dispatch(fetchServices());
     } catch (err) {
       console.error("Error deleting service:", err);
     }

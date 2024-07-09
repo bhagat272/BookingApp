@@ -12,7 +12,7 @@ import {
 } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
-
+import { logout } from './redux/slices/LoginSlice';
 const navigation = [
   { name: 'Home', href: '/homepage', current: true },
   { name: 'Services', href: '#', current: false },
@@ -23,7 +23,10 @@ const navigation = [
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
-
+const handleLogout = () => {
+  dispatch(logout()); // Dispatch the logout action
+  // Optionally, redirect or perform other actions after logout
+};
 export default function Navbar() {
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -127,7 +130,7 @@ export default function Navbar() {
                             to="#"
                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                           >
-                            Sign out
+                          <button onClick={handleLogout}>Sign out</button>
                           </Link>
                         )}
                       </MenuItem>
