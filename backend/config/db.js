@@ -10,15 +10,15 @@ const dbConnect = async () => {
       throw new Error("MONGO_URI is not defined in the environment variables");
     }
 
-    // Mongoose connection options
-    const options = {
-      useNewUrlParser: true,        // Use the new URL parser to avoid deprecation warnings
-      useUnifiedTopology: true,     // Use the new Server Discover and Monitoring engine
-      serverSelectionTimeoutMS: 10000,  // Keep trying to send operations for 10 seconds
-      socketTimeoutMS: 45000,       // Close sockets after 45 seconds of inactivity
-      connectTimeoutMS: 30000,      // Timeout after 30 seconds if unable to connect
-      autoIndex: true,              // Automatically build indexes
-    };
+    // // Mongoose connection options
+    // const options = {
+    //   useNewUrlParser: true,        // Use the new URL parser to avoid deprecation warnings
+    //   useUnifiedTopology: true,     // Use the new Server Discover and Monitoring engine
+    //   serverSelectionTimeoutMS: 10000,  // Keep trying to send operations for 10 seconds
+    //   socketTimeoutMS: 45000,       // Close sockets after 45 seconds of inactivity
+    //   connectTimeoutMS: 30000,      // Timeout after 30 seconds if unable to connect
+    //   autoIndex: true,              // Automatically build indexes
+    // };
 
     // Attempt to connect to MongoDB
     await mongoose.connect(connectionString, options);
