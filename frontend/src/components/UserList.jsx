@@ -2,16 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllUsers } from './redux/slices/userSlice'; // Ensure the path is correct
 import { Toaster, toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const UserList = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { user, loading, error } = useSelector((state) => state.users); // Corrected to 'users' instead of 'user'
     const [searchQuery, setSearchQuery] = useState('');
     const [showNoUserToast, setShowNoUserToast] = useState(false);
-    console.log(user)
+    console.log(user);
+    
     useEffect(() => {
         dispatch(fetchAllUsers());
-    }, []);
+    }, [dispatch]);
 
     // Filter users based on search query
     const filteredUsers = user?.users?.filter(user =>
@@ -36,8 +39,14 @@ const UserList = () => {
     if (!Array.isArray(user?.users)) return <p className="text-center text-yellow-500">Unexpected data format</p>;
 
     return (
-        <div className="p-6 bg-gray-50 min-h-screen">
+        <div className="p-6 bg-gray-50 min-h-screen relative">
             <Toaster />
+            <button 
+                onClick={() => navigate(-1)}
+                className="absolute top-4 left-4 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200"
+            >
+                Back
+            </button>
             <h1 className="text-2xl font-bold mb-4 text-center">User List</h1>
             <div className="mb-6">
                 <input
@@ -58,7 +67,7 @@ const UserList = () => {
                             <div className="flex justify-between items-center">
                                 <div>
                                     <p className="text-lg font-semibold">{user.name}</p>
-                                    <p className="text-gray-600">{user.email}</p>
+                                    <p className="text-xs text-gray-600">{user.email}</p>
                                 </div>
                                 <button className="text-blue-500 hover:text-blue-100 transition duration-200">
                                     View Profile
