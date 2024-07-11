@@ -10,12 +10,7 @@ const app = express();
 
 dbConnect();
  
-app.use(cors({
-  origin: 'https://bookify-sepia.vercel.app', // Replace with your frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true // Allow cookies or authorization headers
-}));
+app.use(cors());
 
 
 app.use(express.json());
