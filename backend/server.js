@@ -32,7 +32,9 @@ app.use("/api", require("./routes/userRoutes"));
 app.use("/api", require("./routes/serviceRoutes"));
 app.use("/api", require("./routes/bookingRoute"));
 app.use('/api', passwordReset);
-
+app.get("/",(req,res)=>{
+  res.send("Bookify Backend server")
+})
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
