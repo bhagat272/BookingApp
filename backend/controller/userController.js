@@ -94,8 +94,9 @@ exports.updateProfile = async (req, res) => {
 
 // Update user profile photo
 exports.updateProfilePhoto = async (req, res) => {
+    console.log(req.user.userId , req.url)
     try {
-        const userId = req.user.id; // Assuming you extract user ID from JWT token middleware
+        const userId = req.user.userId; // Assuming you extract user ID from JWT token middleware
 
         const user = await User.findById(userId);
         if (!user) {
