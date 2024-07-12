@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useRef } from "react";
 // Import necessary CoreUI components
 import {
   CSidebar,
@@ -18,6 +18,7 @@ import {
   cilCloudDownload,
   cilUser,
   cilLayers,
+  cilArrowCircleLeft
 } from "@coreui/icons";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -25,6 +26,8 @@ import { Link } from "react-router-dom";
 const Dashboard = () => {
   const { name } = useSelector((state) => state.login);
   const [sidebarVisible, setSidebarVisible] = useState(false);
+
+  const sidebarRef = useRef(null);
 
   useEffect(() => {
     // Close the sidebar when resizing the window to larger screens
@@ -41,27 +44,27 @@ const Dashboard = () => {
     };
   }, []);
 
+  console.log(sidebarVisible)
+
   const handleSidebarToggle = () => {
-    setSidebarVisible(!sidebarVisible);
+    setSidebarVisible((prev)=>!prev);
   };
 
   const handleClickOutside = (e) => {
-    if (sidebarVisible && !e.target.closest(".sidebar")) {
-      setSidebarVisible(false);
-    }
+    setSidebarVisible((prev)=>!prev);
   };
 
-  useEffect(() => {
-    if (sidebarVisible) {
-      document.addEventListener("click", handleClickOutside);
-    } else {
-      document.removeEventListener("click", handleClickOutside);
-    }
+  // useEffect(() => {
+  //   if (sidebarVisible) {
+  //     document.addEventListener("click", handleClickOutside);
+  //   } else {
+  //     document.removeEventListener("click", handleClickOutside);
+  //   }
 
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [sidebarVisible]);
+  //   return () => {
+  //     document.removeEventListener("click", handleClickOutside);
+  //   };
+  // }, [sidebarVisible]);
 
   return (
     <div className="flex">
@@ -73,8 +76,9 @@ const Dashboard = () => {
       </button>
       <CSidebar
         className={`sidebar border-end lg:static ${
-          sidebarVisible ? "block fixed z-50 top-0 left-0 w-64" : "hidden lg:block"
+          sidebarVisible ? "block fixed z-[999999] top-0 left-0 w-64 ml-0" : "hidden lg:block"
         }`}
+        
         colorScheme="dark"
         style={{ height: "100vh" }}
       >
@@ -83,6 +87,12 @@ const Dashboard = () => {
           <CSidebarBrand>{name}</CSidebarBrand>
         </CSidebarHeader>
         <CSidebarNav>
+          <CNavItem className="flex justify-end">
+          <CNavItem href="#" className="w-[52px] text-center" onClick={handleClickOutside} >
+            <CIcon customClassName="nav-icon" icon={cilArrowCircleLeft} />
+          </CNavItem>
+          </CNavItem>
+        
           <CNavTitle>Nav Title</CNavTitle>
           <CNavItem href="#">
             <CIcon customClassName="nav-icon" icon={cilSpeedometer} /> Nav item
