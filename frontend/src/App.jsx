@@ -30,15 +30,15 @@ function App() {
         <Route element={<PrivateRoute allowedRoles={["admin", "user"]} />}>
           <Route path="/services" element={<ServicesList />} />
           <Route path="/bookingform" element={<BookingForm />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          
           <Route path="/profile" element={<Profile />} />
           <Route path="/homepage" element={<Homepage />} />
         </Route>
 
         <Route path="/" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
-        
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
         {/* Privateroute for admin */}
 
         <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
