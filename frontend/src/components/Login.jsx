@@ -67,12 +67,14 @@ const LoginForm = () => {
       console.log("API Response:", response);
 
       if (response.status === 200) {
-        const { token, role } = response.data;
+        const { token, role , profile } = response.data;
         console.log("Login successful, token received:", token);
         console.log("Role:", role);
         
         localStorage.setItem("authToken", token);
         localStorage.setItem("userRole", role);
+        localStorage.setItem("profile", profile);
+
 
         toast.success("Login successful", {
           duration: 1200,

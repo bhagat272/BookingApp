@@ -30,7 +30,7 @@ exports.login = async (req, res) => {
         const { email, password } = req.body;
         
         const user = await User.findOne({ email });
-        if (!user) {
+         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
         const isValidPassword = await bcrypt.compare(password, user.password);
@@ -38,9 +38,9 @@ exports.login = async (req, res) => {
             return res.status(401).json({ error: "Invalid password" });
         }
 
-        const token = jwt.sign({ userId: user._id , role : user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user._id , role : user.role ,profile : user.profilePhoto }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        res.status(200).json({ token, role: user.role });
+        res.status(200).json({ token, role: user.role , profile : user.profilePhoto });
     } catch (err) {
         console.error("Error during login:", err);
         res.status(500).json({ error: "Failed to login" });
@@ -51,8 +51,7 @@ exports.login = async (req, res) => {
 exports.fetchUserProfile = async (req, res) => {
     try {
         const userId = req.user.userId; // Assuming you extract user ID from JWT token middleware
-        console.log(userId)
-        const user = await User.findById(userId);
+         const user = await User.findById(userId);
         
         if (!user) {
             return res.status(404).json({error: "User not found" });
@@ -104,6 +103,7 @@ exports.updateProfilePhoto = async (req, res) => {
         }
 
         user.profilePhoto = req.file.path; // Assuming req.file.path contains the uploaded file path
+        console.log(req.file.path)
         await user.save();
 
         res.status(200).json({ message: "Profile photo updated successfully", user });

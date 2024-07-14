@@ -116,7 +116,7 @@ const serviceSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchServices.fulfilled, (state, action) => {
-        state.loading = 'succeeded';
+        state.loading = 'idle';
         state.services = action.payload;
       })
       .addCase(fetchServices.rejected, (state, action) => {

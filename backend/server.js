@@ -5,6 +5,7 @@ const cors = require("cors");
 const dbConnect = require("./config/db");
 const passwordReset = require("./routes/passwordReset")
 const morgan = require("morgan");
+const path = require('path');
 const bodyParser = require('body-parser');
 const app = express();
 
@@ -15,11 +16,12 @@ app.use(cors());
 
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms")
 );
-app.use('/uploads', express.static('uploads')); // Serve uploaded files statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use("/api", require("./routes/userRoutes"));

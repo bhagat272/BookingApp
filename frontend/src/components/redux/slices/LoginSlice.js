@@ -11,7 +11,8 @@ import {
     error: null,
     role: null,
     token: null,
-    name : null
+    name : null,
+    userId : null
   };
   
   // Async thunk for login

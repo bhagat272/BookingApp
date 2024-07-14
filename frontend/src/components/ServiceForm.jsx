@@ -8,6 +8,8 @@ const ServiceForm = () => {
 
   // Select 'services' slice from Redux store
   const { loading, error } = useSelector(state => state.service) || {};
+
+  console.log(loading);
   
   const [formValues, setFormValues] = useState({
     name: '',

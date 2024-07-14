@@ -158,9 +158,7 @@ const userSlice = createSlice({
       })
       .addCase(uploadProfilePhoto.fulfilled, (state, action) => {
         state.loading = false;
-        if (state.user) {
-          state.user.profilePhoto = action.payload.profilePhoto; // Update the profile photo URL or file name
-        }
+        state.user = action.payload.user;
       })
       .addCase(uploadProfilePhoto.rejected, (state, action) => {
         state.loading = false;

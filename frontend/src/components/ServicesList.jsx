@@ -42,9 +42,9 @@ const ServicesList = ({ onEdit }) => {
         to="/serviceform"
         className="flex justify-center no-underline hover:no-underline mb-2"
       >
-        <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-200">
+        <div className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-200" >
           Add Services
-        </button>
+        </div>
       </Link>
 
       {error && <p className="text-red-500 text-sm">{error}</p>}

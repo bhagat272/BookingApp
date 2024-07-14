@@ -58,6 +58,7 @@ const Profile = () => {
                         .unwrap()
                         .then(() => {
                             toast.success('Profile photo updated successfully');
+                            // dispatch(fetchUserProfile());
                             setProfilePhoto(null);
                         })
                         .catch(() => {
