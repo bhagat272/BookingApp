@@ -277,7 +277,7 @@ export default function Navbar() {
                       {user?.profilePhoto ? (
                         <img
                           className="h-8 w-8 rounded-full"
-                          src={`${import.meta.env.VITE_IMAGE_URL}${user.profilePhoto}`}
+                          src={`https://bookify-backend.vercel.app/${user.profilePhoto}`}
                           alt=""
                         />
                       ) : (
