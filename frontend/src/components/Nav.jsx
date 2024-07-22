@@ -213,6 +213,7 @@ export default function Navbar() {
   },[dispatch]);
 
   const {user} = useSelector((state)=>state.users);
+  const name =  localStorage.getItem("name");
 
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -233,12 +234,15 @@ export default function Navbar() {
                 </DisclosureButton>
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+               
                 <div className="flex flex-shrink-0 items-center">
                   <img
                     className="h-8 w-auto"
                     src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
                     alt="Your Company"
                   />
+                 <h3 style={{color:"wheat"}}>
+                  &nbsp; welcome {name}</h3>
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">

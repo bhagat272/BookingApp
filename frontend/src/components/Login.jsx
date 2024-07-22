@@ -5,6 +5,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "./redux/slices/LoginSlice";
 import toast, { Toaster } from "react-hot-toast";
+import { jwtDecode } from "jwt-decode"; // Correct import statement for default export
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -70,10 +71,13 @@ const LoginForm = () => {
         const { token, role , profile } = response.data;
         console.log("Login successful, token received:", token);
         console.log("Role:", role);
-        
+        const decoded = jwtDecode(token); // Use the correct default import
+        const { name } = decoded;
+
         localStorage.setItem("authToken", token);
         localStorage.setItem("userRole", role);
         localStorage.setItem("profile", profile);
+        localStorage.setItem("name", name);
 
 
         toast.success("Login successful", {
