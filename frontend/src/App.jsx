@@ -28,7 +28,6 @@ function App() {
         {/* Privateroute for admin and user only*/}
 
         <Route element={<PrivateRoute allowedRoles={["admin", "user"]} />}>
-          <Route path="/services" element={<ServicesList />} />
           <Route path="/bookingform" element={<BookingForm />} />
           
           <Route path="/profile" element={<Profile />} />
@@ -42,6 +41,8 @@ function App() {
         {/* Privateroute for admin */}
 
         <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
+        <Route path="/services" element={<ServicesList />} />
+
           <Route path="/users" element={<UserList />} />
           <Route path="/serviceform" element={<ServiceForm />} />
           <Route path="/serviceupdate/:id" element={<ServiceUpdateForm />} />
